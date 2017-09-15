@@ -3,8 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="js/handlebars-v4.0.10.js" ></script>
+    <script src="js/jquery.min.js"></script>
 </head>
 <body>
+<script id="entry-template1" type="text/x-handlebars-template">
+    <div class="entry">
+        <ul>
+            {{#each person}}
+            <h1>{{name}}</h1>
+            <h2>{{sex}}</h2>
+            <h3 style="color:{{color.[0].firstColor}}">{{color.[0].firstColor}}</h3>
+            {{/each}}
+        </ul>
+    </div>
+</script>
+
+<script id="entry-template2" type="text/x-handlebars-template">
+    <div class="entry">
+        {{#list people}}{{firstName}} {{lastName}}{{/list}}
+        {{#list dog}}{{firstName}} {{lastName}}{{/list}}
+
+    </div>
+</script>
+
+<script>
+    (function single(){
+        var source = $("#entry-template1").html();
+        var template = Handlebars.compile(source);
+        var context = {
+            person: [
+                {name: 'ghm',sex: 'boy',age: 10,color:[{firstColor:'red',secondColor:'green'},{oneColor:'blue',twoColor:'gray'}]},
+                {name:'kkk',sex:'girl',age:12,color:[{firstColor:'gray',secondColor:'pink'},{oneColor:'purple',twoColor:'gray'}]}
+
+            ],
+            animal: [
+                {name:'cw',sex:'gong',age:0.5},
+                {name:'hl',sex:'mu',age:5}
+            ]
+        };
+        var html = template(context);
+        console.log(html)
+        $('body').append(html)
+
+
+    })();
+    (function list(){
+        var source = $("#entry-template2").html();
+        var template = Handlebars.compile(source);
+
+        var context = {
+            people: [
+                {firstName: "Yehuda", lastName: "Katz"},
+                {firstName: "Carl", lastName: "Lerche"},
+                {firstName: "Alan", lastName: "Johnson"}
+            ],
+            dog: [
+                {firstName:"wang1",lastName: "miao1"},
+                {firstName:"wang2",lastName: "miao2"},
+                {firstName:"wang3",lastName: "miao3"}
+
+            ]
+        };
+        Handlebars.registerHelper('list', function(items, options) {
+            var out = "<ul>";
+
+            for(var i=0, l=items.length; i<l; i++) {
+                out = out + "<li>" + options.fn(items[i]) + "</li>";
+            }
+
+            return out + "</ul>";
+        });
+
+        var html = template(context);
+        console.log(html)
+        $('body').append(html)
+
+    })();
+
+</script>
 
 </body>
 </html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/handlebars-v4.0.10.js" ></script>
+
+</head>
+<body>
+<script type="text/x-handlebars-template" id="tbody-tr1">
+    {{#each this}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{age}}</td>
+        </tr>
+    {{/each}}
+</script>
+<table border="1">
+    <thead>
+    <tr>
+        <th>姓名</th>
+        <th>年龄</th>
+    </tr>
+    </thead>
+    <tbody class="tbody1">
+
+    </tbody>
+
+    <script type="text/x-handlebars-template" id="tbody-tr2">
+        {{#each this}}
+            {{#each info}}
+                 <tr>
+                    <td>{{../name}}</td>
+                     <td>{{this}}</td>
+                 </tr>
+             {{/each}}
+        {{/each}}
+    </script>
+    <thead>
+    <tr>
+        <th>姓名</th>
+        <th>信息</th>
+    </tr>
+    </thead>
+
+    <tbody class="tbody2">
+
+    </tbody>
+
+</table>
+<script type="text/x-handlebars-template" id="tbody-tr3">
+    {{#each this}}
+    <tr>
+        <td>{{addone @index}}</td>
+        <td>{{name}}</td>
+        <td>{{age}}</td>
+    </tr>
+    {{/each}}
+</script>
+<table border="1">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+        </tr>
+    </thead>
+    <tbody class="tbody3">
+
+    </tbody>
+</table>
+<script type="text/x-handlebars-template" id="tbody-tr4">
+    {{#each this}}
+         <tr>
+             <td>{{addone @index}}</td>
+             <td>{{name}}</td>
+             <td>{{age}}</td>
+             {{#if list}}
+             <td>{{list}}</td>
+             {{else}}
+             <td>不好</td>
+             {{/if}}
+         </tr>
+    {{/each}}
+</script>
+<table border="2">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+        </tr>
+    </thead>
+    <tbody class="tbody4">
+
+    </tbody>
+</table>
+<script type="text/x-handlebars-template" id="tbody-tr5">
+    {{#each this}}
+
+         <tr>
+            <td>{{addone @index}}</td>
+             {{#compare age 20}}
+            <td>{{name}}<b style="color:green">大于</b></td>
+             {{else}}
+             <td>{{name}}<b style="color:red">小于</b></td>
+             {{/compare}}
+            <td>{{age}}</td>
+        </tr>
+
+
+
+    {{/each}}
+
+
+</script>
+<table border="2">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>年龄</th>
+        </tr>
+    </thead>
+    <tbody class="tbody5">
+    </tbody>
+</table>
+
+
+
+</body>
+<script>
+    //1.each块，循环可以使用键没有键的话可以使用this
+    var data1 = [
+        {"name":"一一","age":10,"info":["爸爸","妈妈","女朋友"]},
+        {"name":"二二","age":20,"info":["篱笆","女人"]},
+        {"name":"三三","age":30,"info":["眼睛","鼻子","嘴巴"],"list":"好"}
+    ];
+    var myTpl1 = Handlebars.compile($('#tbody-tr1').html());
+    $('.tbody1').html(myTpl1(data1));
+
+    //2.循环里可以套循环若使用上一层内容使用../返回上一级。
+    var data2 = [
+            {"name":"一一","age":10,"info":["爸爸","妈妈","女朋友"]},
+            {"name":"二二","age":20,"info":["篱笆","女人"]},
+            {"name":"三三","age":30,"info":["眼睛","鼻子","嘴巴"]}
+        ];
+    var myTp2 = Handlebars.compile($('#tbody-tr2').html());
+    $('.tbody2').html(myTp2(data1));
+    /*
+    3.@index可以读取序列，注册帮助模块可以添加自定义方法，
+    @index不仅可以做序列应用还可以保证id全部唯一。
+    options参数代表块级标签。
+    */
+    var myTpl3 = Handlebars.compile($('#tbody-tr3').html());
+    Handlebars.registerHelper("addone",function(index,options){
+        return parseInt(index)+1;
+    })
+    $('.tbody3').html(myTpl3(data1));
+    /*4.if块，只能判断true和false
+     如果条件为false，undefined, null, "" 或者 空
+     将不会渲染DOM，如果存在{{#else}}则执行{{#else}}后面的渲染
+     */
+    var myTpl4 = Handlebars.compile($('#tbody-tr4').html());
+    $('.tbody4').html(myTpl4(data1));
+    /*5.注册compare比较帮助块。
+    options.fn执行{{else}}以上代码，options.inverse执行else以下代码*/
+    Handlebars.registerHelper('compare',function(age,line,options){
+        if(age>line){
+           return options.fn(this);
+        }else{
+            return options.inverse(this);
+        }
+    })
+    var myTpl5 = Handlebars.compile($('#tbody-tr5').html());
+    $('.tbody5').html(myTpl5(data1));
+
+</script>
+
+</html>

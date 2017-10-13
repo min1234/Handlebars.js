@@ -26,7 +26,28 @@
 
     </div>
 </script>
+<!--
+<script id="entry-template3" type="text/x-handlebars-template">
+    <div class="entry">
+        <a href="{{{baidu}}}">baidu</a>
+        {{link}}
+    </div>
+</script>
 
+-->
+<script id="block-expressions-template" type="text/x-handlebars-template">
+
+    <p> The <b> {{#uppercase}} konami {{/uppercase}} </b> Code is a cheat code that appears in many video games.</p>
+
+    <p>During the title screen before the game demo begins, the player could press the following sequence of buttons on the game controller to enable the cheat:</p>
+
+    <p>{{#uppercase}}{{code}}{{/uppercase}}</p>
+
+    <p>The code is also present as an Easter egg on a number of websites.</p>
+
+</script>
+
+<div class="content-placeholder"></div>
 <script>
     (function single(){
         var source = $("#entry-template1").html();
@@ -80,8 +101,29 @@
         $('body').append(html)
 
     })();
+    (function url(){
+        $(function () {
 
+            var theTemplateScript = $("#block-expressions-template").html();
+            // This is our block helper
+            // The name of our helper is provided as the first parameter - in this case 'uppercase'
+            Handlebars.registerHelper('uppercase', function(options) {
+                // "this" is the context that existed when calling the helper.
+                // The options object has a special function - fn. This is a
+                // compiled version of the template that is contained between the opening and closing
+                // blocks of this helper. To get a string, call fn with the context:
+                return options.fn(this).toUpperCase();
+            });
+            var theTemplate = Handlebars.compile(theTemplateScript);
+            var context = {
+                "code": "up up down down left right left right b a select start"
+            };
+            var theCompiledHtml = theTemplate(context);
+            $('.content-placeholder').html(theCompiledHtml);
+        });
+    })();
 </script>
+
 
 </body>
 </html>
